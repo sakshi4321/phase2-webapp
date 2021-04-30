@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
   <head>
   	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
     <title>Camera App</title>
@@ -10,17 +10,107 @@
   <body>
     <center>
       <h1> Picture 1 <h1>
-      <div id="camera">
-        <img src="{{ url_for('video_feed') }}" alt="video feed">
-      </div>
-      <div id="btns-div">
-        <a href="{{ url_for('capture') }}">
-          <img src="{{ url_for('static',filename='picture.png') }}" alt="take picture" class="btn"> 
-        </a>
-        <a href="{{ url_for('image') }}">
-          <img src="{{ url_for('static',filename='back.png') }}" alt="finish" class="btn"> 
-        </a>
+      <div>
+        <div id="camera">
+          <img src="{{ url_for('video_feed') }}" alt="video feed">
+        </div>
+        <div id="btns-div">
+          <a href="{{ url_for('capture') }}">
+            <img src="{{ url_for('static',filename='picture.png') }}" alt="take picture" class="btn"> 
+          </a>
+          <a href="{{ url_for('image') }}">
+            <img src="{{ url_for('static',filename='back.png') }}" alt="finish" class="btn"> 
+          </a>
+        </div>
+
+        <h1>Name :{{first_name}} {{last_name}}</h1>
       </div>
     </center>
   </body>
-</html>
+</html> -->
+{% extends 'base.html'%}
+
+{%block title%} Image Capture {%endblock%}
+
+
+{%block body%} 
+<!-- <div class="jumbotron p-3 text-center">
+  <h1>College of Military Engineering Pune</h1>
+</div> -->
+
+<nav class="navbar navbar-expand-md bg-light navbar-light">
+  <a class="navbar-brand" href="#">
+    <img src="{{ url_for('static',filename='picture.png') }}" width="30" height="30" class="d-inline-block align-top" alt="#">
+    College of Military Engineering,Pune
+  </a>
+
+  <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+         <a class="nav-link" href="{{url_for('index')}}">
+           Students
+         </a>
+     </li>
+     <li class="nav-item">
+         <a class="nav-link" href="{{url_for('teacher_reg')}}">
+           Teachers
+         </a>
+     </li>
+     <li class="nav-item">
+        <a class="nav-link" href="{{url_for('subject_reg')}}">
+          Subjects
+        </a>
+    </li>
+     <li class="nav-item">
+         <a class="nav-link" href="{{url_for('attendance_records')}}">
+           Attendance
+         </a>
+     </li>
+ </ul>
+</nav>
+<div class="container mt-3">
+
+<center>
+  <div id="camera">
+    <img src="{{ url_for('video_feed') }}" alt="video feed">
+  </div>
+  <div id="btns-div">
+    <a href="{{ url_for('capture') }}">
+    <img src="{{ url_for('static',filename='picture.png') }}" alt="take picture" class="btn btn-outline-light"> 
+    </a>
+    <!-- <a href="{{ url_for('index') }}">
+      <img src="{{ url_for('static',filename='back.png') }}" alt="finish" class="btn"> 
+    </a> -->
+  </div>
+
+ 
+  <table class="table table-bordered text-center">
+    <tbody>
+      <tr>
+        
+        <td>Roll Number</td>
+        <td>{{roll_no}}</td>
+      </tr>
+
+      <tr>
+        <td>First Name</td>
+        <td>{{first_name}}</td>
+      </tr>
+
+      <tr>
+        <td>Last Name</td>
+        <td>{{last_name}}</td>
+      </tr>
+
+      <tr>
+        <td>Phone</td>
+        <td>{{phone}}</td>
+      </tr>
+
+
+    </tbody>
+  </table>
+</center>
+</div>
+
+
+{%endblock%}

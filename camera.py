@@ -16,6 +16,8 @@ import datetime
 from os import path
 from pathlib import Path
 import pickle
+
+
 encoder_model = 'facenet_keras.h5'
 class Camera(object):
     CAPTURES_DIR = "static/captures/"
@@ -26,7 +28,7 @@ class Camera(object):
 
     encoding_dict = dict()
 
-    def __init__(self):
+    def __init__(self):############ Selection of camera is needed
         self.video = cv.VideoCapture(0)
     
     def __del__(self):
@@ -84,10 +86,10 @@ class Camera(object):
         frame = self.get_frame()
         timestamp = strftime("%d-%m-%Y-%Hh%Mm%Ss", localtime())
         
-        os.makedirs('photo/'+str(name_f)+"_"+str(name_l))
+        os.makedirs('static/photo/'+str(name_f)+"_"+str(name_l))
         
         encode=self.detect(frame)
-        filename ='photo/'+ str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
+        filename ='static/photo/'+ str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
         print(filename)
         #root = Path(".")
         #os.chdir('photo/'+ str(name_f)+'_'+ str(name_l))
@@ -97,12 +99,12 @@ class Camera(object):
         my_file.close()"""
         
         
-        print ("directory exists:" + str(path.exists('photo/' + str(name_f)+'_'+ str(name_l))))
+        print ("directory exists:" + str(path.exists('static/photo/' + str(name_f)+'_'+ str(name_l))))
 
         #filename = str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
         if not cv.imwrite(filename, frame):
             raise RuntimeError("Unable to capture image "+timestamp)
-        with open('photo/'+str(name_f)+'_'+ str(name_l)+'/'+timestamp+'.dat', 'wb') as f:
+        with open('static/photo/'+str(name_f)+'_'+ str(name_l)+'/'+timestamp+'.dat', 'wb') as f:
             print('done')
             pickle.dump(encode, f)
         return timestamp,frame
