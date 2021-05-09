@@ -10,24 +10,26 @@
 
     <nav class="navbar navbar-expand-md bg-light navbar-light">
       <a class="navbar-brand" href="#">
-        <img src="{{ url_for('static',filename='picture.png') }}" width="30" height="30" class="d-inline-block align-top" alt="#">
+         <img src="{{ url_for('static',filename='cme.jpg') }}" width="35" height="35" class="d-inline-block align-top" alt="#">
         College of Military Engineering,Pune
       </a>
 
       <ul class="navbar-nav ml-auto">
          <li class="nav-item">
-             <a class="nav-link" href="{{url_for('index')}}">
+             <a class="nav-link font-weight-bold text-dark" href="{{url_for('index')}}">
                Students
              </a>
          </li>
+         
          <li class="nav-item">
-             <a class="nav-link" href="{{url_for('teacher_reg')}}">
-               Teachers
-             </a>
-         </li>
+            <a class="nav-link" href="{{url_for('course_reg')}}">
+              Courses
+            </a>
+        </li>
+
          <li class="nav-item">
-            <a class="nav-link" href="{{url_for('subject_reg')}}">
-              Subjects
+            <a class="nav-link" href="{{url_for('class_reg')}}">
+              Classes
             </a>
         </li>
          <li class="nav-item">
@@ -69,24 +71,32 @@
               
                 <tr>
 
-                    <th class="text-center" style="position: sticky;top: 0;">Roll Number</th>
+                    <th class="text-center" style="position: sticky;top: 0;">Number</th>
+                    <th style="position: sticky;top: 0;">Rank</th>
                     <th style="position: sticky;top: 0;">First Name</th>
                     <th style="position: sticky;top: 0;">Last Name</th>
                     <th style="position: sticky;top: 0;">Phone</th>
+                    <th style="position: sticky;top: 0;">Course</th>
+                    <!-- <th style="position: sticky;top: 0;">Stream</th> -->
+                  
                     <th class="text-center" style="position: sticky;top: 0;">Action</th>
 
                 </tr>
                
-                {% for row in students %}
+                {% for row,row2 in students %}
 
                <tbody class="searchable">
     
                 <tr>
                     <td class="text-center">{{row.roll_no}}</td>
+                    <td>{{row.rank}}</td>
                     <td>{{row.first_name}}</td>
                     <td>{{row.last_name}}</td>
                     <td>{{row.phone}}</td>
-
+                    <td>{{row2.course_name}}</td>
+                    <!-- <td>{{row2.stream}}</td> -->
+               
+                  
                     <td class="text-center"> 
                         <a href="/update/{{row.roll_no}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.roll_no}}">Edit</a>
                         <a href="/delete/{{row.roll_no}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
@@ -118,6 +128,28 @@
                                     <label>Roll Number:</label>
                                     <input type="number" class="form-control" name="roll" required="1" value="{{row.roll_no}}">
                                  </div> -->
+
+                                 <!-- <div class="form-group">
+                                          <label for="sel_rank">Rank:</label>
+                                          <select class="form-control" id="sel_rank" name="rank">
+                                             <option>Captain</option>
+                                             <option>class B</option>
+                                             <option>class C</option>
+                                             <option>class D</option>
+                                          </select>
+                                       </div>  -->
+
+                                 <div class="form-group">
+                                    <label for="sel_rank">Rank:</label>
+                                    <select class="form-control" id="sel_rank" name="rank">
+                                       <option>{{row.rank}}</option>
+                                       <option>Captain</option>
+                                       <option>Civilian</option>
+                                       <option>Major</option>
+                                       <!-- <option>Major</option> -->
+                                    </select>
+                                 </div> 
+                                 
                   
                   
                                 <div class="form-group">
@@ -140,6 +172,50 @@
                                    <input type="number" class="form-control" name="phone" value="{{row.phone}}">
         
                                 </div>
+
+
+                                 <!-- <div class="form-group">
+                                    <label for="sel_course">Course:</label>
+                                    <select class="form-control" id="sel_course" name="course">
+                                       <option>EODE 1</option>
+                                       <option>class B</option>
+                                       <option>class C</option>
+                                       <option>class D</option>
+                                    </select>
+                                 </div> 
+
+                                 <div class="form-group">
+                                    <label for="sel_stream">Class:</label>
+                                    <select class="form-control" id="sel_stream" name="stream">
+                                       <option>Civil</option>
+                                       <option>Mechanical</option>
+                                       <option>class C</option>
+                                       <option>class D</option>
+                                    </select>
+                                 </div>  -->
+
+                                <!-- <div class="form-group">
+                                 <input type="hidden"  name="classid" value="{{row2.class_id}}">
+                                 <label for="sel_class">Class:</label>
+                                 <select class="form-control" id="sel_class" name="class_name">
+                                    <option>{{row2.classname}}</option>
+                                    <option>class A</option>
+                                    <option>class B</option>
+                                    <option>class C</option>
+                                    <option>class D</option>
+                                 </select>
+                               </div>  -->
+
+                               <div class="form-group">
+                                 <label for="sel_course">Course:</label>
+                                 <select class="form-control" id="sel_course" name="course">
+                                    <option>{{row2.course_name}}</option>
+                                    {% for row3 in course %}
+                                    <option>{{row3.course_name}}</option>
+                                    {% endfor %}
+                              
+                                 </select>
+                               </div> 
                   
                   
                                 <div class="form-group">
@@ -183,9 +259,19 @@
                      <!-- <form action="{{ url_for('insert') }}" method="POST"> -->
                      <form action="{{ url_for('indexing') }}" method="POST">
                         <div class="form-group">
-                            <label>Roll Number:</label>
-                            <input type="number" class="form-control" name="roll" required="1">           
+                            <label>Number:</label>
+                            <input type="text" class="form-control" name="roll" required="1">           
                          </div>
+
+                         <div class="form-group">
+                           <label for="sel_rank">Rank:</label>
+                           <select class="form-control" id="sel_rank" name="rank">
+                              <option>Captain</option>
+                              <option>Civilian</option>
+                              <option>Major</option>
+                              <!-- <option>Major</option> -->
+                           </select>
+                         </div> 
           
           
                         <div class="form-group">
@@ -204,6 +290,38 @@
                            <label>Phone:</label>
                            <input type="number" class="form-control" name="phone" required="1">
                         </div>
+
+                        <div class="form-group">
+                           <label for="sel_course">Course:</label>
+                           <select class="form-control" id="sel_course" name="course">
+                              {% for row3 in course %}
+                              <option>{{row3.course_name}}</option>
+                              {% endfor %}
+                        
+                           </select>
+                         </div> 
+<!-- 
+                         <div class="form-group">
+                           <label for="sel_stream">Class:</label>
+                           <select class="form-control" id="sel_stream" name="stream">
+                              <option>Civil</option>
+                              <option>Mechanical</option>
+                              <option>Electrical</option>
+                              <option>class D</option>
+                           </select>
+                         </div>  -->
+
+                 
+
+                        <!-- <div class="form-group">
+                           <label for="sel_class">Class:</label>
+                           <select class="form-control" id="sel_class" name="class_name">
+                              <option>class A</option>
+                              <option>class B</option>
+                              <option>class C</option>
+                              <option>class D</option>
+                           </select>
+                         </div>  -->
           
           
           
@@ -226,7 +344,8 @@
          </div>
     </div>
 
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
+    <script src="/static/jquery.min.js"></script>
  
     <script>
        $(document).ready(function () {

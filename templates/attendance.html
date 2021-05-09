@@ -3,7 +3,7 @@
 {%block body%}
 <nav class="navbar navbar-expand-md bg-light navbar-light">
     <a class="navbar-brand" href="#">
-      <img src="{{ url_for('static',filename='picture.png') }}" width="30" height="30" class="d-inline-block align-top" alt="#">
+      <img src="{{ url_for('static',filename='cme.jpg') }}" width="35" height="35" class="d-inline-block align-top" alt="#">
       College of Military Engineering,Pune
     </a>
 
@@ -14,21 +14,81 @@
            </a>
        </li>
        <li class="nav-item">
-           <a class="nav-link" href="{{url_for('teacher_reg')}}">
-             Teachers
+           <a class="nav-link" href="{{url_for('lecture_reg')}}">
+             Lectures
            </a>
        </li>
        <li class="nav-item">
-          <a class="nav-link" href="{{url_for('subject_reg')}}">
-            Subjects
+          <a class="nav-link" href="{{url_for('class_reg')}}">
+            Classes
           </a>
       </li>
        <li class="nav-item">
-           <a class="nav-link" href="{{url_for('attendance_records')}}">
+           <a class="nav-link font-weight-bold text-dark" href="{{url_for('attendance_records')}}">
              Attendance
            </a>
        </li>
    </ul>
   </nav>
-<h1>Attendace System</h1>
+
+<!-- <div class="container mt-4">
+  <h1>Attendace System</h1>
+  <div class="card-deck-wrapper mt-4">
+      <div class="card-deck">
+          <div class="card p-2">
+              <a class="card-block stretched-link text-decoration-none" href>
+                  
+                  <p class="card-text text-center font-weight-bold display-4 mt-2 text-dark">Class A</p>
+              </a>
+          </div>
+          <div class="card p-2">
+            <a class="card-block stretched-link text-decoration-none" href>
+                
+                <p class="card-text text-center font-weight-bold display-4 mt-2 text-dark">Class A</p>
+            </a>
+          </div>
+          <div class="card p-2">
+            <a class="card-block stretched-link text-decoration-none" href>
+                
+                <p class="card-text text-center font-weight-bold display-4 mt-2 text-dark">Class A</p>
+            </a>
+          </div>
+      </div>
+  </div>
+</div> -->
+
+
+
+
+<div class="container mt-4">
+  <div class="row justify-content-center"><h1>Attendance System</h1></div>
+</div>
+<div class="row ml-2 mt-4">
+  <div class="col-3">
+    <div class="list-group" id="list-tab" role="tablist">
+      <a class="list-group-item list-group-item-action list-group-item-light active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Class A</a>
+      <a class="list-group-item list-group-item-action list-group-item-light" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Class B</a>
+      <a class="list-group-item list-group-item-action list-group-item-light" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Class C</a>
+      <a class="list-group-item list-group-item-action list-group-item-light" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Class D</a>
+    </div>
+  </div>
+  <div class="col-9">
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list"><h1>Hello World</h1></div>
+      <!-- <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-home-list">...</div>
+      <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-home-list">...</div>
+      <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-home-list">...</div> -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
 {%endblock%}
