@@ -28,11 +28,12 @@ class Camera(object):
 
     encoding_dict = dict()
 
-    def __init__(self):############ Selection of camera is needed
+    def start_cam(self):############ Selection of camera is needed
         self.video = cv.VideoCapture(0)
     
-    def __del__(self):
+    def stop_cam(self):
         self.video.release()
+
     def get_face(self,img, box):
         [[x1, y1, width, height]] = box
         x1, y1 ,x2,y2= int(x1), int(y1),int(width),int(height)

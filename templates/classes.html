@@ -77,7 +77,8 @@
            <tbody class="searchable">
 
             <tr>
-                <td class="text-center">{{row.class_id}}</td>
+                <!-- <td class="text-center">{{row.class_id}}</td> -->
+                <td class="text-center">{{loop.index}}</td>
                 <td>{{row.classname}}</td>
                 <td>{{row.camera_name}}</td>
                 <td>{{row2.course_name}}</td>
@@ -189,7 +190,7 @@
 
                  <div class="form-group">
                   <label for="sel_course">Course:</label>
-                  <select class="form-control" id="sel_course" name="course">
+                  <select class="form-control" id="sel_course" name="course" required="1">
                      {% for row3 in courses %}
                      <option>{{row3.course_name}}</option>
                      {% endfor %}

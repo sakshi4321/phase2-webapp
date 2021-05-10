@@ -141,7 +141,7 @@
 
                                  <div class="form-group">
                                     <label for="sel_rank">Rank:</label>
-                                    <select class="form-control" id="sel_rank" name="rank">
+                                    <select class="form-control" id="sel_rank" name="rank" required="1">
                                        <option>{{row.rank}}</option>
                                        <option>Captain</option>
                                        <option>Civilian</option>
@@ -293,7 +293,7 @@
 
                         <div class="form-group">
                            <label for="sel_course">Course:</label>
-                           <select class="form-control" id="sel_course" name="course">
+                           <select class="form-control" id="sel_course" name="course" required="1">
                               {% for row3 in course %}
                               <option>{{row3.course_name}}</option>
                               {% endfor %}

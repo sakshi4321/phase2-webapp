@@ -57,8 +57,8 @@ class Course(db.Model):
     course_id=db.Column(db.Integer,primary_key=True)
     course_name=db.Column(db.String(200),nullable=False)
     # stream=db.Column(db.String(200),nullable=False)
-    courses=db.relationship('Students',backref='courses')
-    course_class=db.relationship('Classes',backref='course_class')
+    courses=db.relationship('Students',backref='courses',cascade = "all,delete, delete-orphan")
+    course_class=db.relationship('Classes',backref='course_class',cascade = "all,delete, delete-orphan")
 
 class Classes(db.Model):
     class_id=db.Column(db.Integer,primary_key=True)
@@ -199,7 +199,8 @@ def insert():
         # first_name=request.form["first_name"]
         # last_name=request.form["last_name"]
         # phone=request.form["phone"]
-
+        camera=get_camera()
+        camera.stop_cam()
         roll_no=session.get("roll_no")
         rank=session.get("rank")
         first_name=session.get("first_name")
@@ -422,6 +423,7 @@ def gen(camera):
 @app.route('/video_feed/')
 def video_feed():
     camera = get_camera()
+    camera.start_cam()
     return Response(gen(camera),
         mimetype='multipart/x-mixed-replace; boundary=frame')
 
