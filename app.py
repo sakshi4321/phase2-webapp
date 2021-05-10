@@ -9,6 +9,8 @@ from flask import send_file, send_from_directory, safe_join, abort,session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+# results=db.session.query(Students,Course,Classes).\
+# ... select_from(Students).join(Course).join(Classes).all()
 
 
 #mysql://root:''@localhost/attendance
@@ -55,14 +57,14 @@ class Timetable(db.Model):
 
 class Course(db.Model):
     course_id=db.Column(db.Integer,primary_key=True)
-    course_name=db.Column(db.String(200),nullable=False)
+    course_name=db.Column(db.String(200),unique=True,nullable=False)
     # stream=db.Column(db.String(200),nullable=False)
     courses=db.relationship('Students',backref='courses',cascade = "all,delete, delete-orphan")
     course_class=db.relationship('Classes',backref='course_class',cascade = "all,delete, delete-orphan")
 
 class Classes(db.Model):
     class_id=db.Column(db.Integer,primary_key=True)
-    classname=db.Column(db.String(200),nullable=False)
+    classname=db.Column(db.String(200),unique=True,nullable=False)
     camera_name=db.Column(db.String(200),nullable=False)
     course_sel=db.Column(db.Integer,db.ForeignKey('course.course_id'))
     # roll=db.relationship('Students',backref='classroom')
@@ -228,6 +230,14 @@ def insert():
 def insert_course():
     if request.method=="POST":
         course_name=request.form["course_name"]
+
+        stud_course=Course.query.all()
+
+        for x in stud_course:
+            if course_name==x.course_name:
+                flash(1)
+                return redirect(url_for("course_reg"))
+
         courses=Course(course_name=course_name)
         db.session.add(courses)
         db.session.commit()
@@ -241,6 +251,15 @@ def insert_class():
         class_name=request.form["class_name"]
         camera_name=request.form["camera_name"]
         course_name=request.form["course"]
+
+        stud_class=Classes.query.all()
+
+        for x in stud_class:
+            if class_name==x.classname:
+                flash(1)
+                return redirect(url_for("class_reg"))
+
+
         course_name=Course.query.filter_by(course_name=course_name).first()
         classes=Classes(classname=class_name,camera_name=camera_name,course_class=course_name)
         db.session.add(classes)
@@ -398,6 +417,14 @@ def indexing():
         course=request.form["course"]
         # stream=request.form["stream"]
         # class_name=request.form["class_name"]
+
+        studs=Students.query.all()
+
+        for x in studs:
+            if roll_no==x.roll_no:
+                flash(1)
+                return redirect(url_for("index"))
+        
 
         session["roll_no"]=roll_no
         session["rank"]=rank

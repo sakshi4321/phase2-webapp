@@ -42,18 +42,29 @@
     </div>
 
     
-     {%with messages=get_flashed_messages()%}
-        {%if messages%} 
-        {%for message in messages%}
-        <div class="alert alert-success alert-dismissable mt-2" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                <span aria-hidden="true">x</span>
-            </button>
-            {{message}}
-        </div>
-        {%endfor%}
-        {%endif%}
-        {%endwith%}
+    {%with messages=get_flashed_messages()%}
+    {%if messages%} 
+    {%for message in messages%}
+    {%if message == 1 %}
+    <div class="alert alert-danger alert-dismissable mt-2" role="alert">
+       <button type="button" class="close" data-dismiss="alert" aria-label="close">
+           <span aria-hidden="true">x</span>
+       </button>
+       Class Exists in the database !!!!
+   </div>
+
+   {% else %}
+
+    <div class="alert alert-success alert-dismissable mt-2" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+            <span aria-hidden="true">x</span>
+        </button>
+        {{message}}
+    </div>
+    {%endif%}
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
     
 
     <div class="row mt-4" style="overflow: auto;height: 630px;">
