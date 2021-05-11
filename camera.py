@@ -16,7 +16,7 @@ import datetime
 from os import path
 from pathlib import Path
 import pickle
-
+import os.path
 
 encoder_model = 'facenet_keras.h5'
 class Camera(object):
@@ -33,7 +33,7 @@ class Camera(object):
     
     def stop_cam(self):
         self.video.release()
-
+        
     def get_face(self,img, box):
         [[x1, y1, width, height]] = box
         x1, y1 ,x2,y2= int(x1), int(y1),int(width),int(height)
@@ -49,7 +49,7 @@ class Camera(object):
 
     def detect(self,frame):
         boxes,probs = Camera.detector.detect(frame)
-        print('checkkkkkkkkkkkkkkkkkkkkkk')
+        
         encodes=[]
 
 	       
@@ -87,28 +87,46 @@ class Camera(object):
         frame = self.get_frame()
         timestamp = strftime("%d-%m-%Y-%Hh%Mm%Ss", localtime())
         
-        os.makedirs('static/photo/'+str(name_f)+"_"+str(name_l))
+        #os.makedirs('photo/'+str(name_f))
         
         encode=self.detect(frame)
-        filename ='static/photo/'+ str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
-        print(filename)
-        #root = Path(".")
-        #os.chdir('photo/'+ str(name_f)+'_'+ str(name_l))
-        """my_path=root/'photo'/ str(name_f)+'_'+ str(name_l)
-        my_file = open(my_path, 'wb')
-        my_file = pickle.dump("data_to_save", encode)
-        my_file.close()"""
         
         
-        print ("directory exists:" + str(path.exists('static/photo/' + str(name_f)+'_'+ str(name_l))))
+        
+        
+        #print ("directory exists:" + str(path.exists('photo/' + str(name_f)+'_'+ str(name_l))))
+        if not os.path.exists('static/photo/'+str(name_f)):
+            os.makedirs('static/photo/'+str(name_f))
+        filename ='static/photo/'+str(name_f)+'/'+ str(name_l)+".jpg"
 
+        #encoded={}
         #filename = str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
+        #encoded={:encode}
         if not cv.imwrite(filename, frame):
             raise RuntimeError("Unable to capture image "+timestamp)
-        with open('static/photo/'+str(name_f)+'_'+ str(name_l)+'/'+timestamp+'.dat', 'wb') as f:
+        """with open('embeddings/'+str(name_f)+'_'+str(name_l)+'.dat', 'wb') as f:
             print('done')
-            pickle.dump(encode, f)
-        return timestamp,frame
+            pickle.dump(encode, f)"""
+        if os.path.exists('static/embeddings/'+str(name_f)+'.dat'):
+            print("True")
+            with open('static/embeddings/'+str(name_f)+'.dat',"rb") as f:
+                encoded = pickle.load(f)
+                #print(obj)
+
+
+
+            with open('static/embeddings/'+str(name_f)+'.dat', 'wb') as f1:
+            
+                encoded[str(name_f)+"_"+str(name_l)]=encode
+                pickle.dump(encoded,f1)
+        else:
+            encoded={}
+            with open('static/embeddings/'+str(name_f)+'.dat', 'wb') as f2:
+            
+                encoded[str(name_f)+"_"+str(name_l)]=encode
+                pickle.dump(encoded,f2)
+            
+        return timestamp,frame 
     """def capture_others(self,name_f,name_l):
         frame = self.get_frame()
         encode=self.detect(frame)
@@ -126,9 +144,3 @@ class Camera(object):
         if not cv.imwrite(filename, frame):
             raise RuntimeError("Unable to capture image "+timestamp)
         return timestamp,frame,filename"""
-     
-
-
-    
-
-    

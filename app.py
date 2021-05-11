@@ -8,7 +8,24 @@ from camera import Camera
 from flask import send_file, send_from_directory, safe_join, abort,session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+import pickle
+import cv2
+import datetime
+import xlwt
+import xlrd
+from facenet_pytorch import MTCNN
+from xlwt import Workbook 
+from matplotlib import pyplot
+#from mtcnn.mtcnn import MTCNN
+from matplotlib.patches import Rectangle
+from keras.models import load_model
+from matplotlib.patches import Circle
+import cv2
+import numpy as np
+from sklearn.preprocessing import Normalizer
+from scipy.spatial.distance import cosine
+import os
+from xlutils.copy import copy
 # results=db.session.query(Students,Course,Classes).\
 # ... select_from(Students).join(Course).join(Classes).all()
 
@@ -354,6 +371,21 @@ def update():
 @app.route('/delete/<id>')
 def delete(id):
     delete_student=Students.query.get(id)
+    course=delete_student.course_sel
+
+    course_1=Course.query.filter_by(course_id=course).first()
+    a=course_1.course_name
+    b=delete_student.roll_no
+    # shutil.rmtree("static/photo/"+str(a)+"/"+str(b)+"jpg",ignore_errors = True)
+    os.remove("static/photo/"+str(a)+"/"+str(b)+".jpg")
+    if os.path.isfile('static/embeddings/'+str(a)+'.dat'):
+        with open('static/embeddings/'+str(a)+'.dat',"rb") as f:
+            encoded = pickle.load(f)
+        with open('static/embeddings/'+str(a)+'.dat', 'wb') as f1:
+            del encoded[str(a)+"_"+str(b)]
+            
+            pickle.dump(encoded,f1)
+
     db.session.delete(delete_student)
     db.session.commit()
     flash("Student Deleted Sucessfully!!")
@@ -372,6 +404,11 @@ def delete_class(id):
 @app.route('/delete_course/<id>')
 def delete_courses(id):
     delete_course=Course.query.get(id)
+    os.remove('static/embeddings'+'/'+str(delete_course.course_name)+'.dat')
+    location="static/photo/"
+    path=os.path.join(location,str(delete_course.course_name))
+    print(path)
+    shutil.rmtree(path,ignore_errors = True)
     db.session.delete(delete_course)
     db.session.commit()
     flash("Course Deleted Sucessfully!!")
@@ -460,9 +497,9 @@ def video_feed():
 def capture():
     #print(name)
     camera = get_camera()
-    first_name=session.get("first_name")
-    last_name=session.get("last_name")
-    stamp,_ = camera.capture(first_name,last_name)
+    course=session.get("course")
+    roll_no=session.get("roll_no")
+    stamp,_ = camera.capture(course,roll_no)
     #print(filename)
     #f = ('%s.jpeg' % time.strftime("%Y%m%d-%H%M%S"))
     #camera.save('%s/%s' % ('None_None', f))
@@ -521,6 +558,207 @@ def show_capture(timestamp):
  <form method="GET" action="{{url_for('index')}}">
 <button type="submit" > Take photo </button>
 </form>"""
+
+###################################################
+####added by s
+
+@app.route('/test')
+def test():
+    return render_template('program.html')
+
+
+
+@app.route('/foo', methods=['POST'])
+def foo():
+    flag=False
+    global video
+    video =cv2.VideoCapture(0)
+    
+    # grab reddit data and write to csv
+    program(flag)
+    
+    return jsonify({"message": "You have turned off the attendace system"})
+
+@app.route('/new', methods=['POST'])
+def new():
+    flag=True
+    # grab reddit data and write to csv
+    program(flag)
+    
+    return redirect(url_for('test'))
+@app.route('/highway', methods=['POST','GET'])
+def highway():
+    return redirect(url_for('index'))
+
+
+
+recognition_t=0.6
+confidence_t=0.99
+
+
+encoder_model = 'facenet_keras.h5'
+
+#detector=MTCNN()
+detector=MTCNN()
+face_encoder = load_model(encoder_model)
+directory='static/embeddings'
+encoded={}
+for filename in os.listdir(directory):
+    if filename.endswith(".dat"):
+        if os.path.isfile('static/embeddings/'+str(filename)):
+            with open('static/embeddings/'+str(filename),"rb") as f:
+                e= pickle.load(f)
+                encoded.update(e)
+
+def get_encode(face_encoder, face, size):
+    face = normalize(face)
+    face = cv2.resize(face, size)
+    encode = face_encoder.predict(np.expand_dims(face, axis=0))[0]
+    return encode
+
+def get_face(img, box):
+    [[x1, y1, width, height]] = box
+    x1, y1 ,x2,y2= int(x1), int(y1),int(width),int(height)
+    #x2, y2 = x1 + width, y1 + height
+    face = img[y1:y2, x1:x2]
+    return face, (x1, y1), (x2, y2)
+ 
+def normalize(img):
+    mean, std = img.mean(), img.std()
+    return (img - mean) / std
+
+l2_normalizer = Normalizer('l2')
+### collect daywise attendance by checking through a list of ppl
+
+def mark_attendance_of_a_lec(a,t):
+    workbook = xlwt.Workbook()  	 
+    sheet = workbook.add_sheet(str(t.year)+"_"+str(t.month)+"_"+str(t.day)) 
+    sheet.write(0,0,"Course")
+    sheet.write(0,1,"Name")
+    sheet.write(0,2,str(t.hour)+":"+str(t.minute))
+    row = 1
+    col = 0
+    
+    if len(a)>0:
+        course=check_which_course(a)
+        for person_name in encoded:
+            print(person_name)
+            #print(a)
+
+            for x in range(0,len(a)):
+                spl=str(a[x]).split('_')
+                cou=spl[0]
+                if person_name in a:
+                    l=str(a[x]).split('_')
+                    print(l)
+                    if str(l[0])==str(course):
+                        sheet.write(row, col,     str(l[0]))
+    
+                        sheet.write(row, col+1,     str(l[1]))
+                        sheet.write(row,col+2,"P")
+                if person_name not in a: 
+                    l=str(person_name).split('_')
+                    if course==cou:
+                        sheet.write(row, col,     str(l[0]))
+    
+                        sheet.write(row, col+1,     str(l[1]))
+                        sheet.write(row,col+2,"A")
+                        
+                
+                row+=1
+        #workbook.save("static/attendance/"+str(t.day)+"_"+str(t.month)+"_"+str(t.year)+"_"+str(t.hour)+":"+str(t.minute)+".xls")
+        workbook.save(os.path.join('static/attendance', str(t.day)+"_"+str(t.month)+"_"+str(t.year)+"_"+str(t.hour)+":"+str(t.minute)+".xls"))
+        
+        
+        print("Marked attendance")
+    else:
+        sheet.write(1,0,"No one is present")
+        workbook.save("sample_class_1.xls") 
+  
+def check_which_course(a):
+    number_of_s={}
+    for x in range(0,len(a)):
+        l=str(a[x]).split('_')
+        if l[0] not in number_of_s:
+            number_of_s[l[0]]=1
+        else:
+            number_of_s[l[0]]+=1
+    course = max(number_of_s, key=number_of_s.get)
+    return course
+        
+
+
+
+present_candidates=[]
+fps_start_time = datetime.datetime.now()
+classNames = []
+with open('coco.names','r') as f:
+    classNames = f.read().splitlines()
+print(classNames)
+thres = 0.5 # Threshold to detect object
+nms_threshold = 0.2 #(0.1 to 1) 1 means no suppress , 0.1 means high suppress
+weightsPath = "frozen_inference_graph.pb"
+configPath = "ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt"
+net = cv2.dnn_DetectionModel(weightsPath,configPath)
+net.setInputSize(320,320)
+net.setInputScale(1.0/ 127.5)
+net.setInputMean((127.5, 127.5, 127.5))
+net.setInputSwapRB(True)
+
+    
+
+            
+def program(flag):
+    while True:
+        check,frame=video.read()
+        total_people=0
+        t=datetime.datetime.now()
+        #frame=sr.upsample(frame)
+        #total_frames = total_frames + 1
+        print(t.second)
+
+        faces,_=detector.detect(frame)
+        classIds, confs, bbox = net.detect(frame,confThreshold=thres)
+        bbox = list(bbox)
+        confs = list(np.array(confs).reshape(1,-1)[0])
+        confs = list(map(float,confs))
+    
+        indices = cv2.dnn.NMSBoxes(bbox,confs,thres,nms_threshold)
+        if len(classIds) != 0:
+        
+            for i in indices:
+                i = i[0]
+            
+                if classIds[i][0]==0:
+                    total_people+=1
+            
+    
+        #print(faces)
+        if faces is not None:
+            for person in faces:
+                bounding_box=person
+                face, pt_1, pt_2 = get_face(frame, [bounding_box])
+                encode = get_encode(face_encoder, face,(160,160))
+                encode = l2_normalizer.transform(encode.reshape(1, -1))[0]
+                name = 'unknown'
+                distance = float("inf")
+                for (db_name, db_enc) in encoded.items():
+                    dist = cosine(db_enc, encode)
+                    if dist < recognition_t and dist < distance:
+                        name = db_name
+                        distance = dist
+                        if name not in present_candidates:
+                            present_candidates.append(name)
+        print(present_candidates)
+        if t.second==59:
+            mark_attendance_of_a_lec(present_candidates,t)     
+        if flag:
+           break  
+     
+    video.release()
+
+
+
 if __name__ == '__main__':
     
 
