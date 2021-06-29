@@ -83,25 +83,28 @@ class Camera(object):
             ret, jpeg = cv.imencode('.jpg', frame)
             return jpeg.tobytes()
 
-    def capture(self,name_f,name_l):
+    def capture(self,name_f):
         frame = self.get_frame()
         timestamp = strftime("%d-%m-%Y-%Hh%Mm%Ss", localtime())
         
         #os.makedirs('photo/'+str(name_f))
-        
+        encode=[]
         encode=self.detect(frame)
         
         
         
         
         #print ("directory exists:" + str(path.exists('photo/' + str(name_f)+'_'+ str(name_l))))
-        if not os.path.exists('static/photo/'+str(name_f)):
-            os.makedirs('static/photo/'+str(name_f))
-        filename ='static/photo/'+str(name_f)+'/'+ str(name_l)+".jpg"
+        if not os.path.exists('static/photo/'):
+            os.makedirs('static/photo/')
+        filename ='static/photo/'+str(name_f)+ ".jpg"
 
         #encoded={}
         #filename = str(name_f)+'_'+ str(name_l)+'/'+timestamp +".jpg"
         #encoded={:encode}
+
+        print("Filename for teacher",filename)
+
         if not cv.imwrite(filename, frame):
             raise RuntimeError("Unable to capture image "+timestamp)
         """with open('embeddings/'+str(name_f)+'_'+str(name_l)+'.dat', 'wb') as f:
@@ -117,13 +120,13 @@ class Camera(object):
 
             with open('static/embeddings/'+str(name_f)+'.dat', 'wb') as f1:
             
-                encoded[str(name_f)+"_"+str(name_l)]=encode
+                encoded[str(name_f)]=encode
                 pickle.dump(encoded,f1)
         else:
             encoded={}
             with open('static/embeddings/'+str(name_f)+'.dat', 'wb') as f2:
             
-                encoded[str(name_f)+"_"+str(name_l)]=encode
+                encoded[str(name_f)]=encode
                 pickle.dump(encoded,f2)
             
         return timestamp,frame 

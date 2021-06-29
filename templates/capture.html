@@ -27,24 +27,15 @@
     <ul class="navbar-nav ml-auto">
        <li class="nav-item">
            <a class="nav-link" href="#">
-             Students
+             Teachers
            </a>
        </li>
        <li class="nav-item">
         <a class="nav-link" href="#">
-          Courses
+          Attendance
         </a>
       </li>
-       <li class="nav-item">
-          <a class="nav-link" href="#">
-            Classes
-          </a>
-      </li>
-       <li class="nav-item">
-           <a class="nav-link" href="#">
-             Attendance
-           </a>
-       </li>
+
    </ul>
   </nav>
 
@@ -56,16 +47,7 @@
       </div>
       
       
-      <!-- <div id="btns-div">
-        <a href="{{ url_for('index') }}">
-          <img src="{{ url_for('static',filename='back.png') }}" alt="go back" class="btn"> 
-        </a>
-        
-       
-        <a href="{{ url_for('image') }}">
-          <img src="{{ url_for('static',filename='forward.png') }}" alt="finish" class="btn"> 
-        </a>
-      </div> -->
+
 		
     <form action="{{ url_for('insert') }}" method="POST">
       <table class="table table-bordered text-center mt-2">
@@ -96,20 +78,6 @@
             <td>{{phone}}</td>
           </tr>
 
-          <!-- <tr>
-        <td>Stream</td>
-        <td>{{stream}}</td>
-      </tr> -->
-
-      <tr>
-        <td>Course</td>
-        <td>{{course}}</td>
-      </tr>
-
-          <!-- <tr>
-            <td>Class</td>
-            <td>{{class_name}}</td>
-          </tr> -->
     
     
         </tbody>
