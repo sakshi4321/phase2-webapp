@@ -485,6 +485,7 @@ def record_attend(flag):
         
             #print(faces)
             if faces is not None:
+                print("any face")
                 for person in faces:
                     bounding_box=person
                     face, pt_1, pt_2 = get_face(frame, [bounding_box])
@@ -543,7 +544,7 @@ def record_attend(flag):
                                     teach=Teachers.query.filter_by(roll_no=name).first()
                                     time = now.strftime("%H:%M")
                                     att=Attendance(in_time=time,out_time="--",date_att=current_date,attendance_id=teach)
-                                    track1=Track.query.filter_by(teach_track=name).first()
+                                    track1=Track.query.filter_by(teach_track=teach.roll_no).first()
                                     track1.in_out= True
                                     db.session.add(att)
 
@@ -576,7 +577,7 @@ def highway():
 def start_attendance():
     flag=True
     global video
-    video=cv2.VideoCapture(0)
+    video=cv2.VideoCapture('rtsp://admin:admin@123@192.168.1.240:554/cam/realmonitor?channel=2&subtype=0')
     flash("Attendance system started")
     record_attend(flag)
 

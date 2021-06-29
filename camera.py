@@ -29,7 +29,7 @@ class Camera(object):
     encoding_dict = dict()
 
     def start_cam(self):############ Selection of camera is needed
-        self.video = cv.VideoCapture(0)
+        self.video = cv.VideoCapture('rtsp://admin:admin@123@192.168.1.240:554/cam/realmonitor?channel=2&subtype=0')
     
     def stop_cam(self):
         self.video.release()
@@ -51,6 +51,7 @@ class Camera(object):
         boxes,probs = Camera.detector.detect(frame)
         
         encodes=[]
+        encode=[]
 
 	       
         if boxes is not None:
