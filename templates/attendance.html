@@ -23,6 +23,12 @@
             Attendance
           </a>
       </li>
+
+      <li class="nav-item">
+         <a class="nav-link" href="{{url_for('test')}}">
+           Live system
+         </a>
+     </li>
  
  
    </ul>
@@ -211,7 +217,7 @@
     <div class="col-md-12 mt-3">
         <button class="btn btn-outline-secondary btn-md float-right font-weight-bold" data-toggle="modal" data-target="#mymodal">+ Add New Attendee</button>
      </div>
-     <div class="col-md-12 mt-3">
+     <!-- <div class="col-md-12 mt-3">
          <form action="{{url_for('start_attendance')}}" method="POST">
             <button class="btn btn-outline-success btn-md float-left font-weight-bold" type="submit">Start Attendance</button>
          </form>
@@ -221,7 +227,7 @@
         <form action="{{url_for('stop_attendance')}}" method="POST">
             <button class="btn btn-outline-danger btn-md float-left font-weight-bold ml-3" type="submit">Stop Attendance</button>
         </form>
-     </div>
+     </div> -->
 
      <div id="mymodal" class="modal fade" role="dialog">
         <div class="modal-dialog">

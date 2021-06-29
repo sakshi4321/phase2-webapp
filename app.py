@@ -276,6 +276,10 @@ def update_att():
     db.session.commit()
     flash("Attendance Update Successfully !!")
     return redirect(url_for('attendance_sys'))
+#######################start and stop button
+@app.route('/test')
+def test():
+    return render_template('program.html')
 
 def to_dict(row):
     if row is None:
@@ -565,7 +569,9 @@ def record_attend(flag):
     video.release()
 
 
-
+@app.route('/highway', methods=['POST','GET'])
+def highway():
+    return redirect(url_for('attendance_sys'))
 @app.route('/start_attendance',methods=["POST"])
 def start_attendance():
     flag=True
